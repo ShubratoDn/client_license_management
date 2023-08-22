@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +16,11 @@ public class UserLicense {
 	@Id
 	@GeneratedValue(strategy =  GenerationType.IDENTITY)
 	private Long userLicenseId;
+	
+	@ManyToOne
 	private License license;
-	private User user;
+
+	@ManyToOne
+    private User user;
 	
 }
