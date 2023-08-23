@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.license.management.DTO.UserDTO;
@@ -31,6 +32,9 @@ public class UserServicesImpl implements UserServices {
 	@Autowired
 	private RoleRepository roleRepository;
 	
+	@Autowired
+	private PasswordEncoder bCryptPasswordEncoder;
+	
 	/**
      * Saves a user.
      *
@@ -50,6 +54,7 @@ public class UserServicesImpl implements UserServices {
         user.setDateLastLogin(null);
         user.setDateUpdated(null);
         user.setLocked(false);
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
         // Save the user
         User savedUser = userRepository.save(user);

@@ -3,6 +3,8 @@ package com.license.management.DTO;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.license.management.entities.Role;
 
 import jakarta.persistence.CascadeType;
@@ -25,6 +27,19 @@ public class UserDTO {
 	private Timestamp dateLastLogin;
 	private boolean isLocked;
 	
+	
+	@JsonIgnore
+	public String getPassword() {
+		return password;
+	}
+
+	@JsonProperty
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+
+
 	@ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
 	private List<Role> roles;	
 }

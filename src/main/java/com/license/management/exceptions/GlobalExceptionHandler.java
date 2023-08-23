@@ -8,6 +8,8 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.license.management.payloads.ErrorResponse;
 
+import io.jsonwebtoken.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 
 @RestControllerAdvice
@@ -111,5 +114,58 @@ public class GlobalExceptionHandler {
   	}
   	
 
+  	
+  	/**
+  	 * Handles the UsernameNotFoundException and returns an error response.
+  	 *
+  	 * @param ex The UsernameNotFoundException to handle.
+  	 * @return A ResponseEntity containing the error response.
+  	 */
+  	@ExceptionHandler(UsernameNotFoundException.class)
+  	public ResponseEntity<ErrorResponse> handleUsernameNotFoundException(UsernameNotFoundException ex) {
+  	    log.error("Error occurred while processing the request.", ex);
+
+  	    ErrorResponse errorResponse = new ErrorResponse(
+  	            LocalDateTime.now(), // Replace with actual timestamp logic
+  	            HttpStatus.NOT_FOUND.value(),
+  	            "User Not Found",
+  	            "The requested user was not found."
+  	    );
+
+  	    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+  	}
+  	
+  	
+  	
+  	/**
+  	 * Exception handler for handling SignatureException.
+  	 *
+  	 * @param ex The SignatureException to handle.
+  	 * @return A ResponseEntity containing the error response for unauthorized requests.
+  	 */
+  	@ExceptionHandler(SignatureException.class)
+  	public ResponseEntity<ErrorResponse> handleSignatureException(SignatureException ex) {
+  	    ErrorResponse errorResponse = new ErrorResponse(
+  	            LocalDateTime.now(),
+  	            HttpStatus.UNAUTHORIZED.value(),
+  	            "Unauthorized",
+  	            "Signature verification failed: " + ex.getMessage()
+  	    );
+
+  	    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+  	}
+
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+            LocalDateTime.now(),
+            HttpStatus.FORBIDDEN.value(),
+            "Access Denied",
+            "You do not have permission to access this resource."
+        );
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+    }
+  	
 	
 }

@@ -7,6 +7,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,8 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.license.management.DTO.UserDTO;
 import com.license.management.config.Constants;
+import com.license.management.config.jwt.JwtTokenUtil;
+import com.license.management.config.security.CustomUserDetailsServiceImpl;
 import com.license.management.entities.Role;
 import com.license.management.payloads.ErrorResponse;
+import com.license.management.payloads.LoginRequest;
+import com.license.management.payloads.LoginResponse;
 import com.license.management.payloads.RegisterRequest;
 import com.license.management.services.UserServices;
 
@@ -33,11 +43,15 @@ public class AuthController {
 	@Autowired
 	private UserServices userServices;
 	
+	@Autowired
+	private AuthenticationManager authenticationManager;
 	
-	@PostMapping("/login")
-	public ResponseEntity<?> login(){
-		return ResponseEntity.ok("ok");
-	}
+	@Autowired
+	private CustomUserDetailsServiceImpl customUserDetailsServiceImpl;
+	
+	@Autowired
+	private JwtTokenUtil jwtTokenUtil; 
+	
 	
 	
 	/**
@@ -82,6 +96,71 @@ public class AuthController {
         log.info("New user registered successfully: {}", savedUser.getUsername());
 
         return ResponseEntity.ok(savedUser);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	@PostMapping("/login")
+	public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
+		String username = loginRequest.getUsername();
+		String password = loginRequest.getPassword();
+		
+		
+		try {
+		    authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+		} catch (DisabledException e) {
+		    ErrorResponse errorResponse = new ErrorResponse(
+		        LocalDateTime.now(),
+		        HttpStatus.BAD_REQUEST.value(),
+		        "User Account Disabled",
+		        "User account is disabled."
+		    );
+		    return ResponseEntity.badRequest().body(errorResponse);
+		} catch (BadCredentialsException e) {
+		    ErrorResponse errorResponse = new ErrorResponse(
+		        LocalDateTime.now(),
+		        HttpStatus.UNAUTHORIZED.value(),
+		        "Bad Credentials",
+		        "Incorrect username or password."
+		    );
+		    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+		} catch (InternalAuthenticationServiceException e) {
+		    ErrorResponse errorResponse = new ErrorResponse(
+		        LocalDateTime.now(),
+		        HttpStatus.BAD_REQUEST.value(),
+		        "User Not Found",
+		        "User not found."
+		    );
+		    return ResponseEntity.badRequest().body(errorResponse);
+		}
+		UserDetails userDetails = customUserDetailsServiceImpl.loadUserByUsername(username);
+		String token = jwtTokenUtil.generateToken(userDetails);
+		
+		
+		
+		UserDTO userDto = new UserDTO();
+		userDto.setEmail(username);
+		userDto.setUsername(username);
+		
+		UserDTO user = userServices.getUserByEmailOrUsername(userDto);
+		
+		LoginResponse loginResponse = new LoginResponse();
+		loginResponse.setToken(token);
+		loginResponse.setUser(user);
+		
+		return ResponseEntity.ok(loginResponse);
+		
 	}
 	
 }

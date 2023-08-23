@@ -36,11 +36,11 @@ public class LicenseManagementApplication implements CommandLineRunner {
 		//Adding roles
 		Role roleUser = new Role();
 		roleUser.setId(Constants.ROLE_USER);
-		roleUser.setRole("USER");
+		roleUser.setRole("ROLE_USER");
 		
 		Role roleAdmin = new Role();
 		roleAdmin.setId(Constants.ROLE_ADMIN);
-		roleAdmin.setRole("ADMIN");
+		roleAdmin.setRole("ROLE_ADMIN");
 		
 		List<Role> roles = List.of(roleUser, roleAdmin);		
 		roleRepo.saveAll(roles);		
