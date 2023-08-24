@@ -13,4 +13,6 @@ public interface UserServices {
 	public UserDTO getUserByEmailOrUsername(UserDTO userDTO);
 	
 	public UserDTO deleteUser(UserDTO dto);
+	
+	public void updateLastLogin(UserDTO user );
 }

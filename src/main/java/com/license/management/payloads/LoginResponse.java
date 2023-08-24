@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 public class LoginResponse {
 
-	private UserDTO user;
 	private String token;
+	private UserDTO user;
 	
 }

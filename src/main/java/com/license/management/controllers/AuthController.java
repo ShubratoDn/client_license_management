@@ -111,56 +111,67 @@ public class AuthController {
 	
 	
 	
+	/**
+	 * Logs in a user and generates an authentication token.
+	 *
+	 * @param loginRequest The login request containing the username and password.
+	 * @return ResponseEntity containing the authentication token and user information if login is successful,
+	 *         or an error response if login fails.
+	 */
 	@PostMapping("/login")
-	public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
-		String username = loginRequest.getUsername();
-		String password = loginRequest.getPassword();
-		
-		
-		try {
-		    authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-		} catch (DisabledException e) {
-		    ErrorResponse errorResponse = new ErrorResponse(
-		        LocalDateTime.now(),
-		        HttpStatus.BAD_REQUEST.value(),
-		        "User Account Disabled",
-		        "User account is disabled."
-		    );
-		    return ResponseEntity.badRequest().body(errorResponse);
-		} catch (BadCredentialsException e) {
-		    ErrorResponse errorResponse = new ErrorResponse(
-		        LocalDateTime.now(),
-		        HttpStatus.UNAUTHORIZED.value(),
-		        "Bad Credentials",
-		        "Incorrect username or password."
-		    );
-		    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
-		} catch (InternalAuthenticationServiceException e) {
-		    ErrorResponse errorResponse = new ErrorResponse(
-		        LocalDateTime.now(),
-		        HttpStatus.BAD_REQUEST.value(),
-		        "User Not Found",
-		        "User not found."
-		    );
-		    return ResponseEntity.badRequest().body(errorResponse);
-		}
-		UserDetails userDetails = customUserDetailsServiceImpl.loadUserByUsername(username);
-		String token = jwtTokenUtil.generateToken(userDetails);
-		
-		
-		
-		UserDTO userDto = new UserDTO();
-		userDto.setEmail(username);
-		userDto.setUsername(username);
-		
-		UserDTO user = userServices.getUserByEmailOrUsername(userDto);
-		
-		LoginResponse loginResponse = new LoginResponse();
-		loginResponse.setToken(token);
-		loginResponse.setUser(user);
-		
-		return ResponseEntity.ok(loginResponse);
-		
+	public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+	    String username = loginRequest.getUsername();
+	    String password = loginRequest.getPassword();
+
+	    try {
+	        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+	    } catch (DisabledException e) {
+	        ErrorResponse errorResponse = new ErrorResponse(
+	            LocalDateTime.now(),
+	            HttpStatus.BAD_REQUEST.value(),
+	            "User Account Disabled",
+	            "User account is disabled."
+	        );
+	        log.error("Login failed for user '{}': User account is disabled.", username);
+	        return ResponseEntity.badRequest().body(errorResponse);
+	    } catch (BadCredentialsException e) {
+	        ErrorResponse errorResponse = new ErrorResponse(
+	            LocalDateTime.now(),
+	            HttpStatus.UNAUTHORIZED.value(),
+	            "Bad Credentials",
+	            "Incorrect username or password."
+	        );
+	        log.error("Login failed for user '{}': Incorrect username or password.", username);
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+	    } catch (InternalAuthenticationServiceException e) {
+	        ErrorResponse errorResponse = new ErrorResponse(
+	            LocalDateTime.now(),
+	            HttpStatus.BAD_REQUEST.value(),
+	            "User Not Found",
+	            "User not found."
+	        );
+	        log.error("Login failed for user '{}': User not found.", username);
+	        return ResponseEntity.badRequest().body(errorResponse);
+	    }
+
+	    UserDetails userDetails = customUserDetailsServiceImpl.loadUserByUsername(username);
+	    String token = jwtTokenUtil.generateToken(userDetails);
+
+	    UserDTO userDto = new UserDTO();
+	    userDto.setEmail(username);
+	    userDto.setUsername(username);
+
+	    UserDTO user = userServices.getUserByEmailOrUsername(userDto);
+
+	    LoginResponse loginResponse = new LoginResponse();
+	    loginResponse.setToken(token);
+	    loginResponse.setUser(user);
+
+	    userServices.updateLastLogin(user);
+	    
+	    log.info("User '{}' has successfully logged in.", username);
+	    return ResponseEntity.ok(loginResponse);
 	}
+
 	
 }

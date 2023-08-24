@@ -2,6 +2,7 @@ package com.license.management.servicesImpl;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,6 +118,18 @@ public class UserServicesImpl implements UserServices {
 		}
 		UserDTO map = modelMapper.map(user, UserDTO.class);		
 		return map;
+	}
+
+	
+	
+	
+	@Override
+	public void updateLastLogin(UserDTO userDto ) {
+		User user = userRepository.findById(userDto.getUserId()).orElse(null);
+		user.setDateLastLogin(Timestamp.from(Instant.now()));
+		
+		userRepository.save(user);
+		
 	}
 	
 	
