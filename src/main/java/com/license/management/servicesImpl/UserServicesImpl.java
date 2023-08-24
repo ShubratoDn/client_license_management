@@ -8,12 +8,14 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.license.management.DTO.UserDTO;
 import com.license.management.entities.Role;
 import com.license.management.entities.User;
+import com.license.management.exceptions.UsernameAlreadyExistsException;
 import com.license.management.repositories.RoleRepository;
 import com.license.management.repositories.UserRepository;
 import com.license.management.services.UserServices;
@@ -131,6 +133,60 @@ public class UserServicesImpl implements UserServices {
 		userRepository.save(user);
 		
 	}
-	
+
+	@Override
+	public UserDTO updateProfile(UserDTO userDto) {
+		String name = SecurityContextHolder.getContext().getAuthentication().getName();
+		User user = userRepository.findByUsernameOrEmail(name, name);
+		
+		
+		//if the email doesn't match with existing email
+		if(userDto.getEmail() != null && !userDto.getEmail().isBlank() && !userDto.getEmail().equals(user.getEmail())) {
+			User findByEmail = userRepository.findByEmail(userDto.getEmail());
+			if(findByEmail != null) {
+				throw new UsernameAlreadyExistsException(name);
+			}
+			
+			user.setEmail(userDto.getEmail());
+		}
+		
+		
+		if(userDto.getUsername() != null && !userDto.getUsername().isBlank() && !userDto.getUsername().equals(user.getUsername())) {
+			User findByUsername= userRepository.findByUsername(userDto.getUsername());
+			if(findByUsername != null) {
+				throw new UsernameAlreadyExistsException(userDto.getUsername());
+			}
+			
+			user.setUsername(userDto.getUsername());
+		}
+		
+		
+		
+		if(userDto.getFullName() != null && !userDto.getFullName().isBlank() && !userDto.getFullName().equals(user.getFullName())) {
+			user.setFullName(userDto.getFullName());
+		}
+		
+//		System.out.println(userDto.getPassword()+"NEW PASS");
+//		if(userDto.getPassword() != null && !userDto.getPassword().isBlank()) {
+//			String newPass= bCryptPasswordEncoder.encode(userDto.getPassword());
+//			String oldPass = user.getPassword();
+//			
+//			if(!bCryptPasswordEncoder.matches(newPass, oldPass)) {
+//				System.out.println("password Changed");
+//				System.out.println("new pass " + newPass);
+//				System.out.println("old pass " + oldPass);
+//				user.setPassword(newPass);
+//			}else {
+//				System.out.println("password NOT Changed");
+//			}
+//		}
+		
+		user.setDateUpdated(Timestamp.from(Instant.now()));
+		
+		User updatedUser = userRepository.save(user);
+		
+		UserDTO map = modelMapper.map(updatedUser, UserDTO.class);		
+		return map;
+	}
 	
 }

@@ -14,5 +14,8 @@ public interface UserServices {
 	
 	public UserDTO deleteUser(UserDTO dto);
 	
-	public void updateLastLogin(UserDTO user );
+	public void updateLastLogin(UserDTO user);
+	
+	public UserDTO updateProfile(UserDTO userDto);
+	
 }

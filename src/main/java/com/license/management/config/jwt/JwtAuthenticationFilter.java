@@ -66,9 +66,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             } catch (IllegalArgumentException e) {
                 log.error("Unable to get JWT token (Filter Class)", e);
-            } catch (ExpiredJwtException e) {
-                log.error("JWT token has expired (Filter Class)", e);
-                
+            } catch (ExpiredJwtException e) {                
                 // Create an ErrorResponse object
 	            ErrorResponse errorResponse = new ErrorResponse(
 	                    LocalDateTime.now(), 

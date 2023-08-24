@@ -80,7 +80,7 @@ public class AuthController {
         }
         
         // Determine user role based on secret code
-		if(registerRequest.getSecretCode().equals(Constants.ADMIN_SECRET)) {
+		if(registerRequest.getSecretCode() != null && registerRequest.getSecretCode().equals(Constants.ADMIN_SECRET)) {
 			Role adminRole = new Role();
 			adminRole.setId(Constants.ROLE_ADMIN);
 			userDTO.setRoles(List.of(adminRole));
@@ -173,5 +173,8 @@ public class AuthController {
 	    return ResponseEntity.ok(loginResponse);
 	}
 
+	
+	
+	
 	
 }

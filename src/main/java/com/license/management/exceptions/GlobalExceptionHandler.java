@@ -156,16 +156,43 @@ public class GlobalExceptionHandler {
   	}
 
 
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(
-            LocalDateTime.now(),
-            HttpStatus.FORBIDDEN.value(),
-            "Access Denied",
-            "You do not have permission to access this resource."
-        );
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
-    }
-  	
+  	/**
+  	 * Exception handler for handling AccessDeniedException.
+  	 * This method is invoked when access to a resource is denied due to insufficient permissions.
+  	 *
+  	 * @param ex The AccessDeniedException that was thrown.
+  	 * @return A ResponseEntity containing an ErrorResponse with details of the access denial.
+  	 */
+  	@ExceptionHandler(AccessDeniedException.class)
+  	public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex) {
+  	    ErrorResponse errorResponse = new ErrorResponse(
+  	        LocalDateTime.now(),
+  	        HttpStatus.FORBIDDEN.value(),
+  	        "Access Denied",
+  	        "You do not have permission to access this resource."
+  	    );
+  	    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+  	}
 	
+	  	
+	
+	/**
+	 * Exception handler for handling UsernameAlreadyExistsException.
+	 * This method is invoked when a username already exists in the system.
+	 *
+	 * @param ex The UsernameAlreadyExistsException that was thrown.
+	 * @return A ResponseEntity containing an ErrorResponse with details of the username conflict.
+	 */
+	@ExceptionHandler(UsernameAlreadyExistsException.class)
+	public ResponseEntity<ErrorResponse> handleUsernameAlreadyExistsException(UsernameAlreadyExistsException ex) {
+	    log.error("UsernameAlreadyExistsException: {}", ex.getMessage());
+	
+	    ErrorResponse errorResponse = new ErrorResponse(
+	        LocalDateTime.now(),
+	        HttpStatus.CONFLICT.value(),
+	        "Username or Email Already Exists",
+	        ex.getMessage()
+	    );
+	    return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+	}	
 }
