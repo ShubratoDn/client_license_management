@@ -10,6 +10,8 @@ public interface UserServices {
 	
 	public UserDTO getUserByEmail(UserDTO userDTO);
 	
+	public UserDTO getUserByEmail(String email);
+	
 	public UserDTO getUserByEmailOrUsername(UserDTO userDTO);
 	
 	public UserDTO deleteUser(UserDTO dto);

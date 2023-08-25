@@ -2,7 +2,6 @@ package com.license.management.servicesImpl;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.license.management.DTO.UserDTO;
 import com.license.management.entities.Role;
 import com.license.management.entities.User;
+import com.license.management.exceptions.ResourceNotFoundException;
 import com.license.management.exceptions.UsernameAlreadyExistsException;
 import com.license.management.repositories.RoleRepository;
 import com.license.management.repositories.UserRepository;
@@ -85,6 +85,16 @@ public class UserServicesImpl implements UserServices {
 		User findByEmail = userRepository.findByEmail(userDTO.getEmail());
 		if(findByEmail == null) {
 			return null;
+		}
+		
+		UserDTO map = modelMapper.map(findByEmail, UserDTO.class);		
+		return map;
+	}
+	
+	public UserDTO getUserByEmail(String email) {
+		User findByEmail = userRepository.findByEmail(email);
+		if(findByEmail == null) {
+			throw new ResourceNotFoundException("User", email);
 		}
 		
 		UserDTO map = modelMapper.map(findByEmail, UserDTO.class);		

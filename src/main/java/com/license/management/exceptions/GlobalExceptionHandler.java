@@ -20,6 +20,7 @@ import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import com.license.management.payloads.ErrorResponse;
 
@@ -346,4 +347,46 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 	
+    
+    /**
+     * Handles the NoHandlerFoundException and returns an ErrorResponse.
+     *
+     * @param ex      The NoHandlerFoundException that was thrown.
+     * @param request The current web request.
+     * @return A ResponseEntity with an ErrorResponse and HTTP status code.
+     */
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoHandlerFoundException(
+            NoHandlerFoundException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                "Resource Not Found",
+                "The requested resource was not found."
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+    
+    
+    
+    
+    
+    /**
+     * Handles the TransactionFailedException and returns an ErrorResponse.
+     *
+     * @param ex The TransactionFailedException that was thrown.
+     * @return A ResponseEntity with an ErrorResponse and HTTP status code.
+     */
+    @ExceptionHandler(TransactionFailedException.class)
+    public ResponseEntity<ErrorResponse> handleTransactionFailedException(TransactionFailedException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "Transaction Failed",
+                "The transaction failed to complete."
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
+    
+    
 }
