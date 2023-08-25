@@ -29,6 +29,6 @@ public class License {
 	
 	private Timestamp activationDate;
 	private Timestamp expiringDate;
-	private String state;
+	private String state;	
 	private double price;
 }

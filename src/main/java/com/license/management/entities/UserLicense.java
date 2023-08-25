@@ -23,4 +23,6 @@ public class UserLicense {
 	@ManyToOne
     private User user;
 	
+	private boolean isActive;
+	
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.license.management.DTO.ProductDTO;
 import com.license.management.entities.Product;
+import com.license.management.exceptions.ResourceNotFoundException;
 import com.license.management.repositories.ProductRepository;
 import com.license.management.services.ProductServices;
 
@@ -59,7 +60,7 @@ public class ProductServicesImpl implements ProductServices {
 	public ProductDTO getProductById(Long id) {		
 		Product product = productRepository.findById(id).orElse(null);		
 		if(product== null) {
-			return null;
+			throw new ResourceNotFoundException("Porduct", id.toString());			
 		}		
 		ProductDTO mapedProduct = modelMapper.map(product, ProductDTO.class);		
 		return mapedProduct;

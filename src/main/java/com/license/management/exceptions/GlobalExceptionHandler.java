@@ -10,13 +10,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.license.management.payloads.ErrorResponse;
 
@@ -26,6 +29,30 @@ import lombok.extern.slf4j.Slf4j;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+	
+	 /**
+     * Handles the exception when a method argument type mismatch occurs.
+     * Returns a response with a "Bad Request" error message indicating the invalid parameter type.
+     *
+     * @param ex The exception indicating the method argument type mismatch.
+     * @return A ResponseEntity with an ErrorResponse and HTTP status code.
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        log.error("Bad Request - Invalid parameter type: {}", ex.getName());
+      
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                "Bad Request",
+                "Invalid parameter type for " + ex.getName()
+            );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+    
+    
+    
 
 	/**
      * Handles the HttpMessageNotReadableException and returns an error response.
@@ -35,7 +62,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
-        log.error("Error occurred while processing the request.", ex);
+//        log.error("Error occurred while processing the request.", ex);
 
         ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(), // Replace with actual timestamp logic
@@ -194,5 +221,108 @@ public class GlobalExceptionHandler {
 	        ex.getMessage()
 	    );
 	    return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
-	}	
+	}
+	
+	/**
+	 * Handles the exception when a request is rejected.
+	 * Returns a response with a "Forbidden" error message indicating the rejected request.
+	 *
+	 * @param ex The exception indicating the rejected request.
+	 * @return A ResponseEntity with an ErrorResponse and HTTP status code.
+	 */
+	@ExceptionHandler(RequestRejectedException.class)
+	public ResponseEntity<ErrorResponse> handleRequestRejectedException(RequestRejectedException ex) {
+	    log.error("Forbidden - Request rejected: {}", ex.getMessage());
+
+	    ErrorResponse errorResponse = new ErrorResponse(
+	        LocalDateTime.now(),
+	        HttpStatus.FORBIDDEN.value(),
+	        "Forbidden",
+	        "Request rejected: " + ex.getMessage()
+	    );
+
+	    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+	}
+
+	
+	
+	
+	
+	
+	@ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+            LocalDateTime.now(),
+            HttpStatus.BAD_REQUEST.value(),
+            "Bad Request",
+            ex.getMessage()
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+	
+	
+	
+	
+	/**
+     * Handles the exception when a resource is not found.
+     * Returns a response with a "Not Found" error message indicating the resource was not found.
+     *
+     * @param ex The exception indicating the resource was not found.
+     * @return A ResponseEntity with an ErrorResponse and HTTP status code.
+     */
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        log.error("Not Found - Resource not found: {}", ex.getMessage());
+
+        ErrorResponse errorResponse = new ErrorResponse(
+            LocalDateTime.now(),
+            HttpStatus.NOT_FOUND.value(),
+            "Not Found",
+            "Resource not found: " + ex.getMessage()
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+	
+	
+    
+    /**
+     * Handles the exception when a path variable is missing.
+     * Returns a response with a "Bad Request" error message indicating the missing path variable.
+     *
+     * @param ex The exception indicating the missing path variable.
+     * @return A ResponseEntity with an ErrorResponse and HTTP status code.
+     */
+    @ExceptionHandler(MissingPathVariableException.class)
+    public ResponseEntity<ErrorResponse> handleMissingPathVariable(MissingPathVariableException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+            LocalDateTime.now(),
+            HttpStatus.BAD_REQUEST.value(),
+            "Missing Path Variable",
+            "The path variable '" + ex.getVariableName() + "' is missing."
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+	
+	
+    
+    /**
+     * Handles the exception when a NullPointerException occurs.
+     * Returns a response with a "Internal Server Error" error message indicating the null pointer exception.
+     *
+     * @param ex The exception indicating the NullPointerException.
+     * @return A ResponseEntity with an ErrorResponse and HTTP status code.
+     */
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<ErrorResponse> handleNullPointerException(NullPointerException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+            LocalDateTime.now(),
+            HttpStatus.BAD_REQUEST.value(),
+            "Bad Request",
+            "A NullPointerException occurred: " + ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
+	
 }

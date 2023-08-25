@@ -34,7 +34,7 @@ public class UserController {
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping("/delete/user/{userId}")
-	public ResponseEntity<?> test(@PathVariable Long userId){
+	public ResponseEntity<?> deleteUser(@PathVariable Long userId){
 		
 		UserDTO userDTO = new UserDTO();
 		userDTO.setUserId(userId);

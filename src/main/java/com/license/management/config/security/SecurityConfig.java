@@ -40,7 +40,7 @@ public class SecurityConfig {
         "/api/v1/login",
         "/api/v1/register",
         "/api/v1/test",
-//        "/api/v1/delete/user/**",
+//        "/api/v1/delete/user/**",       
     };	
 	
 	/**
@@ -55,7 +55,8 @@ public class SecurityConfig {
 		http.cors() // Enable Cross-Origin Resource Sharing (CORS)
 			.and().csrf().disable() // Disable CSRF protection
 			.authorizeHttpRequests(auth ->
-				auth.requestMatchers(ENDPOINTS_WHITELIST).permitAll() // Permit whitelisted endpoints without authentication
+				auth.requestMatchers(ENDPOINTS_WHITELIST).permitAll() // Permit whitelisted endpoints without authentication					
+					.requestMatchers("/api/v1/auth/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
 					.anyRequest().authenticated()) // Require authentication for other endpoints
 			.exceptionHandling()
 			.authenticationEntryPoint(authenticationEntryPoint) // Configure authentication entry point for handling unauthenticated requests				
