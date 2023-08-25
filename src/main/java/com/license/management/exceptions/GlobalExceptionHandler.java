@@ -324,5 +324,26 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
+    
+    
+    
+    
+    /**
+     * Handles the InvalidDateFormatException and returns an ErrorResponse.
+     *
+     * @param ex      The InvalidDateFormatException that was thrown.
+     * @param request The current web request.
+     * @return A ResponseEntity with an ErrorResponse and HTTP status code.
+     */
+    @ExceptionHandler(InvalidDateFormatException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidDateFormatException(InvalidDateFormatException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                "Invalid Date Format",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
 	
 }
