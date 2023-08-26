@@ -1,8 +1,10 @@
 package com.license.management.controllers;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import com.license.management.DTO.TransactionHistoryDto;
 import com.license.management.DTO.UserDTO;
 import com.license.management.DTO.UserLicenseDTO;
 import com.license.management.payloads.ErrorResponse;
+import com.license.management.payloads.PurchasedLicenseBody;
 import com.license.management.services.LicenseServices;
 import com.license.management.services.TransactionService;
 import com.license.management.services.UserLicenseService;
@@ -37,8 +40,10 @@ public class UserLicenseController {
 	private UserLicenseService userLicenseService;
 	
 	@Autowired
-	private TransactionService transactionService;
+	private TransactionService transactionService;	
 	
+	@Autowired
+	private ModelMapper  modelMapper;
 	
 	@PostMapping("/purchase-license/{licenseId}")
 	public ResponseEntity<?> purchaseLicense(@PathVariable Long licenseId){		
@@ -68,7 +73,15 @@ public class UserLicenseController {
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		UserDTO user = userServices.getUserByEmail(username);		
 		List<UserLicenseDTO> userLicenses = userLicenseService.getUserLicenses(user);		
-		return ResponseEntity.ok(userLicenses);
+		List<PurchasedLicenseBody> purchasedLicenseBodies = new ArrayList<>();
+		
+		for(UserLicenseDTO userLicenseDTO: userLicenses) {
+			PurchasedLicenseBody map = modelMapper.map(userLicenseDTO, PurchasedLicenseBody.class);
+			map.setUsername(username);
+			purchasedLicenseBodies.add(map);
+		}
+		
+		return ResponseEntity.ok(purchasedLicenseBodies);
 	}
 	
 	

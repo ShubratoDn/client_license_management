@@ -8,6 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.license.management.config.Constants;
 import com.license.management.entities.Role;
@@ -15,6 +16,7 @@ import com.license.management.repositories.RoleRepository;
 
 
 @SpringBootApplication
+@EnableScheduling
 public class LicenseManagementApplication implements CommandLineRunner {
 
 	@Autowired
@@ -43,7 +45,7 @@ public class LicenseManagementApplication implements CommandLineRunner {
 		roleAdmin.setRole("ROLE_ADMIN");
 		
 		List<Role> roles = List.of(roleUser, roleAdmin);		
-		roleRepo.saveAll(roles);		
-	}
-
+		roleRepo.saveAll(roles);	
+		
+	}	
 }

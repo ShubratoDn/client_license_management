@@ -16,4 +16,9 @@ public class Constants {
 	public static final String PAYMENT_STATUS_SUCCESSFUL = "SUCCESSFUL";
 	public static final String PAYMENT_STATUS_PENDING = "PENDING";
 	public static final String PAYMENT_STATUS_FAILED = "FAILED";
+	
+	
+	public static final String NOTIFICATION_TYPE_EXPIRE_SOON = "EXPIRE_SOON";
+	public static final String NOTIFICATION_TYPE_EXPIRED = "EXPIRED";
+	public static final String NOTIFICATION_TYPE_RENEWAL = "RENEWAL";
 }

@@ -1,5 +1,6 @@
 package com.license.management.repositories;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,5 +13,7 @@ public interface UserLicenseRepository extends JpaRepository<UserLicense, Long> 
 
 	UserLicense findByUserAndLicense(User user, License license);
 	
-	List<UserLicense> findByUser(User user);
+	List<UserLicense> findByUserOrderByUserLicenseIdDesc(User user);
+	
+	List<UserLicense> findByLicenseStateOrLicenseExpiringDateBeforeAndIsActiveIsTrue(String state, Timestamp expirationTime);
 }

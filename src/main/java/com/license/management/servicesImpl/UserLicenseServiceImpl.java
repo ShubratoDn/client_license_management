@@ -70,7 +70,7 @@ public class UserLicenseServiceImpl implements UserLicenseService {
 	
 	
 	public List<UserLicenseDTO> getUserLicenses(UserDTO userDTO) {
-		List<UserLicense> licences = userLicenseRepository.findByUser(modelMapper.map(userDTO, User.class));
+		List<UserLicense> licences = userLicenseRepository.findByUserOrderByUserLicenseIdDesc(modelMapper.map(userDTO, User.class));
 		
 	    // Use Java Streams to map the products to ProductDTO
 	    List<UserLicenseDTO> licenseDTOs = licences.stream()

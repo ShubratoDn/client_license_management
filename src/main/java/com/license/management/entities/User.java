@@ -3,6 +3,9 @@ package com.license.management.entities;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -35,4 +38,15 @@ public class User {
 	@ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
 	private List<Role> roles;
 	
+	
+	@JsonIgnore
+	public String getPassword() {
+		return password;
+	}
+
+	@JsonProperty
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 }

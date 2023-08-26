@@ -2,6 +2,7 @@ package com.license.management.entities;
 
 import java.sql.Timestamp;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,8 +21,14 @@ public class Notification {
 	private Long notificationId;
 	
 	@ManyToOne
-	private User user;
+	private User user;	
+	
+	@ManyToOne
+	private License license;
+	
 	private String notificationType;
+	
+	@Column(length = 5000)
 	private String message;
 	private Timestamp timestamp;
 	
