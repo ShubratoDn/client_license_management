@@ -28,28 +28,42 @@ public class NotificationController {
 	
 
 	
+	/**
+	 * Retrieves notifications for the currently authenticated user.
+	 *
+	 * @return A ResponseEntity containing a list of NotificationResponse objects.
+	 */
 	@GetMapping("/my-notifactions")
-	public ResponseEntity<?> test(){
-		String username = SecurityContextHolder.getContext().getAuthentication().getName();		
-		UserDTO userByEmail = userServices.getUserByEmail(username);		
-		List<NotificationDTO> notificationsByUser = notificationService.getNotificationsByUser(userByEmail);
-		
-		List<NotificationResponse> responses = new ArrayList<>();
-		
-		for(NotificationDTO notificationDTO: notificationsByUser) {
-			NotificationResponse notificationResponse = new NotificationResponse(); 
-		
-			notificationResponse.setNotificationId(notificationDTO.getNotificationId());
-			notificationResponse.setMessage(notificationDTO.getMessage());
-			notificationResponse.setNotificationType(notificationDTO.getNotificationType());
-			notificationResponse.setProductName(notificationDTO.getLicense().getProduct().getProductName());
-			notificationResponse.setProductVersion(notificationDTO.getLicense().getProduct().getVersion());
-			notificationResponse.setTimestamp(notificationDTO.getTimestamp());
-			notificationResponse.setUsername(notificationDTO.getUser().getFullName());
-			
-			responses.add(notificationResponse);
-		}		
-		
-		return ResponseEntity.ok(responses);
+	public ResponseEntity<?> getMyNotifications() {
+	    // Get the username of the currently authenticated user
+	    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+	    // Retrieve user information by email
+	    UserDTO userByEmail = userServices.getUserByEmail(username);
+
+	    // Retrieve notifications for the user
+	    List<NotificationDTO> notificationsByUser = notificationService.getNotificationsByUser(userByEmail);
+
+	    // Prepare a list of NotificationResponse objects
+	    List<NotificationResponse> responses = new ArrayList<>();
+
+	    // Map NotificationDTOs to NotificationResponse objects
+	    for (NotificationDTO notificationDTO : notificationsByUser) {
+	        NotificationResponse notificationResponse = new NotificationResponse();
+
+	        notificationResponse.setNotificationId(notificationDTO.getNotificationId());
+	        notificationResponse.setMessage(notificationDTO.getMessage());
+	        notificationResponse.setNotificationType(notificationDTO.getNotificationType());
+	        notificationResponse.setProductName(notificationDTO.getLicense().getProduct().getProductName());
+	        notificationResponse.setProductVersion(notificationDTO.getLicense().getProduct().getVersion());
+	        notificationResponse.setTimestamp(notificationDTO.getTimestamp());
+	        notificationResponse.setUsername(notificationDTO.getUser().getFullName());
+
+	        responses.add(notificationResponse);
+	    }
+
+	    // Return the list of NotificationResponse objects as a ResponseEntity
+	    return ResponseEntity.ok(responses);
 	}
+
 }

@@ -1,5 +1,6 @@
 package com.license.management.exceptions;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -388,5 +389,25 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
     
+    
+    /**
+     * Handles SQLIntegrityConstraintViolationException.
+     *
+     * @param ex The SQLIntegrityConstraintViolationException.
+     * @return A ResponseEntity with an ErrorResponse and HTTP status code.
+     */
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex) {
+        log.error("SQL Integrity Constraint Violation Exception: {}", ex.getMessage());
+
+        ErrorResponse errorResponse = new ErrorResponse(
+            LocalDateTime.now(),
+            HttpStatus.CONFLICT.value(),
+            "SQL Integrity Constraint Violation",
+            "A database constraint violation occurred: Before deleting parent, please delete child data"
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
     
 }

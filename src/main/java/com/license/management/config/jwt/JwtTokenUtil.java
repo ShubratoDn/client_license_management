@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,15 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 @Service
 public class JwtTokenUtil {
-	private String SECRET_KEY = "EXAMIFY-SECRET";
+//	private String SECRET_KEY = "LICENSE";
+	
+
+    @Value("${jwt.secret-key}")
+    private String SECRET_KEY;
+
+    @Value("${jwt.expiration-time}")
+    private long EXPIRATION_TIME; // Expiration time in milliseconds
+	
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);        
@@ -48,7 +57,8 @@ public class JwtTokenUtil {
     private String createToken(Map<String, Object> claims, String subject) {
 
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() +(1000 * 60 * 60 * 24)))
+//                .setExpiration(new Date(System.currentTimeMillis() +(1000 * 60 * 60 * 24)))
+        		  .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
     }
 

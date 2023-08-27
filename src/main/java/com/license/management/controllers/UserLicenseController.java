@@ -45,45 +45,74 @@ public class UserLicenseController {
 	@Autowired
 	private ModelMapper  modelMapper;
 	
+	/**
+	 * Purchase a license for the currently authenticated user.
+	 *
+	 * @param licenseId The ID of the license to purchase.
+	 * @return A ResponseEntity containing a UserLicenseDTO representing the purchased license.
+	 */
 	@PostMapping("/purchase-license/{licenseId}")
-	public ResponseEntity<?> purchaseLicense(@PathVariable Long licenseId){		
-		String username = SecurityContextHolder.getContext().getAuthentication().getName();
-		UserDTO user = userServices.getUserByEmail(username);
-		LicenseDTO license = licenseServices.getLicenseById(licenseId);
-		
-		if (userLicenseService.getByUserAndLicense(user, license) != null) {
-		    ErrorResponse errorResponse = new ErrorResponse(
-		        LocalDateTime.now(),
-		        HttpStatus.BAD_REQUEST.value(),
-		        "License Already Purchased",
-		        "You have already purchased this license."
-		    );
-		    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-		}
+	public ResponseEntity<?> purchaseLicense(@PathVariable Long licenseId) {
+	    // Get the username of the currently authenticated user
+	    String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
-		UserLicenseDTO purchaseLicense = userLicenseService.purchaseLicense(user, license);		
+	    // Retrieve user information by email
+	    UserDTO user = userServices.getUserByEmail(username);
 
-		return ResponseEntity.ok(purchaseLicense);
+	    // Retrieve the license to purchase by its ID
+	    LicenseDTO license = licenseServices.getLicenseById(licenseId);
+
+	    // Check if the user has already purchased this license
+	    if (userLicenseService.getByUserAndLicense(user, license) != null) {
+	        ErrorResponse errorResponse = new ErrorResponse(
+	            LocalDateTime.now(),
+	            HttpStatus.BAD_REQUEST.value(),
+	            "License Already Purchased",
+	            "You have already purchased this license."
+	        );
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+	    }
+
+	    // Purchase the license for the user
+	    UserLicenseDTO purchasedLicense = userLicenseService.purchaseLicense(user, license);
+
+	    // Return the purchased license as a ResponseEntity
+	    return ResponseEntity.ok(purchasedLicense);
 	}
+
 	
 	
 	
+	/**
+	 * Get licenses purchased by the currently authenticated user.
+	 *
+	 * @return A ResponseEntity containing a list of PurchasedLicenseBody representing the user's licenses.
+	 */
 	@GetMapping("/my-licenses")
-	public ResponseEntity<?> myLicences(){		
-		String username = SecurityContextHolder.getContext().getAuthentication().getName();
-		UserDTO user = userServices.getUserByEmail(username);		
-		List<UserLicenseDTO> userLicenses = userLicenseService.getUserLicenses(user);		
-		List<PurchasedLicenseBody> purchasedLicenseBodies = new ArrayList<>();
-		
-		for(UserLicenseDTO userLicenseDTO: userLicenses) {
-			PurchasedLicenseBody map = modelMapper.map(userLicenseDTO, PurchasedLicenseBody.class);
-			map.setUsername(username);
-			purchasedLicenseBodies.add(map);
-		}
-		
-		return ResponseEntity.ok(purchasedLicenseBodies);
+	public ResponseEntity<?> myLicences() {
+	    // Get the username of the currently authenticated user
+	    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+	    // Retrieve user information by email
+	    UserDTO user = userServices.getUserByEmail(username);
+
+	    // Retrieve licenses purchased by the user
+	    List<UserLicenseDTO> userLicenses = userLicenseService.getUserLicenses(user);
+
+	    // Create a list to hold the response data
+	    List<PurchasedLicenseBody> purchasedLicenseBodies = new ArrayList<>();
+
+	    // Map and populate the response data
+	    for (UserLicenseDTO userLicenseDTO : userLicenses) {
+	        PurchasedLicenseBody map = modelMapper.map(userLicenseDTO, PurchasedLicenseBody.class);
+	        map.setUsername(username);
+	        purchasedLicenseBodies.add(map);
+	    }
+
+	    // Return the list of user's purchased licenses as a ResponseEntity
+	    return ResponseEntity.ok(purchasedLicenseBodies);
 	}
-	
+
 	
 	
 	@GetMapping("/my-transactions")

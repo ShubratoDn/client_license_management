@@ -1,0 +1,428 @@
+{
+	"info": {
+		"_postman_id": "57ab3b17-5968-451c-ba8d-c5ffe8f136fd",
+		"name": "License Management",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "28095059"
+	},
+	"item": [
+		{
+			"name": "User Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"Shubrato\",\r\n    \"password\": \"1111\",\r\n    \"email\": \"shubrato@gmail.com\",\r\n    \"fullName\": \"John Doe\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:8080/api/v1/register"
+			},
+			"response": []
+		},
+		{
+			"name": "Admin User Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"Shubrato\",\r\n    \"password\": \"1111\",\r\n    \"email\": \"shubrato@gmail.com\",\r\n    \"fullName\": \"John Doe\",\r\n    \"secretCode\": \"MYADMIN\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:8080/api/v1/register"
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"akash\",\r\n    \"password\":\"1111\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:8080/api/v1/login"
+			},
+			"response": []
+		},
+		{
+			"name": "Login Admin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"Shubrato\",\r\n    \"password\":\"1111\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:8080/api/v1/login"
+			},
+			"response": []
+		},
+		{
+			"name": "Update User Profile",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaHVicmF0b0BnbWFpbC5jb20iLCJleHAiOjE2OTMyMDMyNzgsImlhdCI6MTY5MzExNjg3OH0.3H5S_6RL1z1TTlCM8-K1vN7gb1FaUl82NobCUtfoc6k",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"akash\",\r\n    \"email\": \"akash@gmail.com\",\r\n    \"fullName\": \"Akash\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:8080/api/v1/update-profile"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaHVicmF0b0BnbWFpbC5jb20iLCJleHAiOjE2OTI4MTY1MDksImlhdCI6MTY5MjgxMjkwOX0.uxE-ylwIaEMW8pfUTufZQZrSa3-F2eOAxXoeNuVYeNM",
+						"type": "text"
+					}
+				],
+				"url": "localhost:8080/api/v1/delete/user/3"
+			},
+			"response": []
+		},
+		{
+			"name": "ADD product",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaHVicmF0b0BnbWFpbC5jb20iLCJleHAiOjE2OTMwNDg4ODAsImlhdCI6MTY5Mjk2MjQ4MH0.5WKlsh0fSUicsJfVbRJluOKsdOm2hNwkBd4WVhth8RM",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"productName\": \"Spring Tool Suite\",\r\n    \"version\": \"4.2\",\r\n    \"description\": \"Tool for java\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:8080/api/v1/add-product"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete product",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaHVicmF0b0BnbWFpbC5jb20iLCJleHAiOjE2OTMxMzAyMTQsImlhdCI6MTY5MzA0MzgxNH0.79cxSxnp6xc3BjLAgi7t_GnPnb77MeDZ0TA6Hg24rKM",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": "localhost:8080/api/v1/delete/product/11"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Product By ID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaHVicmF0b0BnbWFpbC5jb20iLCJleHAiOjE2OTI4NjE2MzQsImlhdCI6MTY5Mjg1ODAzNH0.FBCKErkT26uCm3bKC83-sIUmeOHBQ0fxSuVL2a2OW0M",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": "localhost:8080/api/v1/product/7"
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Products",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJha2FzaEBnbWFpbC5jb20iLCJleHAiOjE2OTMxMjI5NDQsImlhdCI6MTY5MzAzNjU0NH0.N849jlNFgvrhR5G1Dmiy8CBF_flQ1TBfD5PaA3muLHY",
+						"type": "text"
+					}
+				],
+				"url": "localhost:8080/api/v1/product"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Products By Search",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGdtYWlsLmNvbSIsImV4cCI6MTY5Mjg2MzUwNCwiaWF0IjoxNjkyODU5OTA0fQ.ggpO2p82Of8str1jQO73fjTJaRuyWuYuT5i80KjhDok",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/api/v1/product/search?name=adobe",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"product",
+						"search"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "adobe"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add lincese",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaHVicmF0b0BnbWFpbC5jb20iLCJleHAiOjE2OTMwNzAyMzUsImlhdCI6MTY5Mjk4MzgzNX0.ne8TgDcA7kWW6wAErfGe0ZMXcXsp-Yy3Qno0t_SrYSg",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"product\": {\r\n        \"productId\": 11\r\n    },\r\n    \"expiringDate\": \"2023-08-26T22:54\",\r\n    \"price\": \"100\",\r\n    \"state\": \"activate\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:8080/api/v1/add-license"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete License",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaHVicmF0b0BnbWFpbC5jb20iLCJleHAiOjE2OTMxMzAyMTQsImlhdCI6MTY5MzA0MzgxNH0.79cxSxnp6xc3BjLAgi7t_GnPnb77MeDZ0TA6Hg24rKM",
+						"type": "text"
+					}
+				],
+				"url": "localhost:8080/api/v1/delete/license/10"
+			},
+			"response": []
+		},
+		{
+			"name": "Update License",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaHVicmF0b0BnbWFpbC5jb20iLCJleHAiOjE2OTMwNTA0NzMsImlhdCI6MTY5Mjk2NDA3M30.SgD1yWpW68bzPBSokE8NJlqc_IhlEwqtCY95nwYURBk",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"licenseId\": 10,\r\n    \"product\": {\r\n        \"productId\": 10,\r\n        \"productName\": \"Spring Tool Suite\",\r\n        \"version\": \"4.1\",\r\n        \"description\": \"Tool for java\"\r\n    },\r\n    \"expiringDate\": \"2023-08-25T22:54:00.000+00:00\",\r\n    \"state\": \"Activate\",\r\n    \"price\": 69.0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:8080/api/v1/update-license"
+			},
+			"response": []
+		},
+		{
+			"name": "Get License",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJha2FzaEBnbWFpbC5jb20iLCJleHAiOjE2OTMwMzYyMjUsImlhdCI6MTY5Mjk0OTgyNX0.Fa8UIWY3dM4NB0okJSnOnUsw9vvLEQNwPpq1qSIsEd0",
+						"type": "text"
+					}
+				],
+				"url": "localhost:8080/api/v1/license/5"
+			},
+			"response": []
+		},
+		{
+			"name": "Get ALL License",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJha2FzaEBnbWFpbC5jb20iLCJleHAiOjE2OTMxMjI5NDQsImlhdCI6MTY5MzAzNjU0NH0.N849jlNFgvrhR5G1Dmiy8CBF_flQ1TBfD5PaA3muLHY",
+						"type": "text"
+					}
+				],
+				"url": "localhost:8080/api/v1/licenses"
+			},
+			"response": []
+		},
+		{
+			"name": "Get licenses by Searching",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJha2FzaEBnbWFpbC5jb20iLCJleHAiOjE2OTMwMzYyMjUsImlhdCI6MTY5Mjk0OTgyNX0.Fa8UIWY3dM4NB0okJSnOnUsw9vvLEQNwPpq1qSIsEd0",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/api/v1/license/search?name=spring&price=200&expireDate=2023-08-25",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"license",
+						"search"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "spring"
+						},
+						{
+							"key": "price",
+							"value": "200"
+						},
+						{
+							"key": "expireDate",
+							"value": "2023-08-25"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Purchase License",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJha2FzaEBnbWFpbC5jb20iLCJleHAiOjE2OTMwNzIxOTYsImlhdCI6MTY5Mjk4NTc5Nn0.jdyEWkmXfnoGlXVeaXWJBI1rjKpEnbF8WmHVXAOEGPw",
+						"type": "text"
+					}
+				],
+				"url": "localhost:8080/api/v1/purchase-license/13"
+			},
+			"response": []
+		},
+		{
+			"name": "My Purchased Licences",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJha2FzaEBnbWFpbC5jb20iLCJleHAiOjE2OTMwNzIxOTYsImlhdCI6MTY5Mjk4NTc5Nn0.jdyEWkmXfnoGlXVeaXWJBI1rjKpEnbF8WmHVXAOEGPw",
+						"type": "text"
+					}
+				],
+				"url": "localhost:8080/api/v1/my-licenses"
+			},
+			"response": []
+		},
+		{
+			"name": "My All Transactions",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJha2FzaEBnbWFpbC5jb20iLCJleHAiOjE2OTMwNzIxOTYsImlhdCI6MTY5Mjk4NTc5Nn0.jdyEWkmXfnoGlXVeaXWJBI1rjKpEnbF8WmHVXAOEGPw",
+						"type": "text"
+					}
+				],
+				"url": "localhost:8080/api/v1/my-transactions"
+			},
+			"response": []
+		},
+		{
+			"name": "Get my All Notifications",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJha2FzaEBnbWFpbC5jb20iLCJleHAiOjE2OTMxMjg2NTYsImlhdCI6MTY5MzA0MjI1Nn0.CXN40_tDUiMBt64puaYEs7WUdevwFSW3XVnsvNX7Vac",
+						"type": "text"
+					}
+				],
+				"url": "localhost:8080/api/v1/my-notifactions"
+			},
+			"response": []
+		}
+	]
+}
