@@ -130,7 +130,7 @@ public class GlobalExceptionHandler {
   	public ResponseEntity<Map<String, String>> methodArgumentNotValidExceptionHandler (MethodArgumentNotValidException ex){
   		
   		Map<String, String> response = new HashMap<>(); 
-  		response.put("error", "Invalid Input");
+//  		response.put("error", "Invalid Input");
   		
   		List<ObjectError> allErrors = ex.getBindingResult().getAllErrors();
   		
