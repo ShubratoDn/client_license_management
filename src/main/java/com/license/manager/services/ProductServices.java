@@ -21,4 +21,7 @@ public interface ProductServices {
 	public PageableResponse getProductsBySearchPageable(String productName, String version,int pageNumber, int pageSize, String sortBy, String sortDirection);
 	
 	public void deleteProductById(long id);
+	
+	
+	public ProductDTO updateProduct(Long productId, ProductDTO productDTO);
 }

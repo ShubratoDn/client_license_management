@@ -8,6 +8,10 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +22,10 @@ import com.license.manager.entities.License;
 import com.license.manager.entities.Notification;
 import com.license.manager.entities.User;
 import com.license.manager.entities.UserLicense;
+import com.license.manager.exceptions.ResourceNotFoundException;
+import com.license.manager.payloads.NotificationRequest;
+import com.license.manager.payloads.NotificationResponse;
+import com.license.manager.payloads.PageableResponse;
 import com.license.manager.repositories.NotificationRepository;
 import com.license.manager.repositories.UserLicenseRepository;
 import com.license.manager.services.NotificationService;
@@ -159,6 +167,104 @@ public class NotificationServiceImpl implements NotificationService {
 		}
 		return notificationDTOs;
 	}
+
+
+
+	@Override
+	public PageableResponse getNotificationsByUserPageable(UserDTO userDTO, int pageNumber, int pageSize, String sortBy, String sortDirection) {
+		
+		Sort sort = null;
+		if (sortDirection.equalsIgnoreCase("asc")) {
+			sort = Sort.by(sortBy).ascending();
+		} else {
+			sort = Sort.by(sortBy).descending();
+		}
+
+		// STEP pagable
+		Page<Notification> pageInfo;
+		try {
+			Pageable page = PageRequest.of(pageNumber, pageSize, sort);
+			pageInfo =notificationRepository.findByUserOrderByNotificationIdDesc(modelMapper.map(userDTO, User.class), page);
+		} catch (Exception e) {
+			Pageable page = PageRequest.of(pageNumber, pageSize, Sort.by("notificationId").descending());
+			pageInfo = notificationRepository.findByUserOrderByNotificationIdDesc(modelMapper.map(userDTO, User.class), page);
+		}
+		
+				
+		List<Notification> notifications = pageInfo.getContent();
+		
+		List<NotificationDTO> notificationDTOs = new ArrayList<>(); 
+		
+		for(Notification notification : notifications) {
+			notificationDTOs.add(modelMapper.map(notification, NotificationDTO.class));
+		}
+		
+		
+		// Prepare a list of NotificationResponse objects
+	    List<NotificationResponse> responses = new ArrayList<>();
+
+	    // Map NotificationDTOs to NotificationResponse objects
+	    for (NotificationDTO notificationDTO : notificationDTOs) {
+	        NotificationResponse notificationResponse = new NotificationResponse();
+
+	        notificationResponse.setNotificationId(notificationDTO.getNotificationId());
+	        notificationResponse.setMessage(notificationDTO.getMessage());
+	        notificationResponse.setNotificationType(notificationDTO.getNotificationType());
+	        notificationResponse.setProductName(notificationDTO.getLicense().getProduct().getProductName());
+	        notificationResponse.setProductVersion(notificationDTO.getLicense().getProduct().getVersion());
+	        notificationResponse.setTimestamp(notificationDTO.getTimestamp());
+	        notificationResponse.setUsername(notificationDTO.getUser().getFullName());
+
+	        responses.add(notificationResponse);
+	    }
+		
+		
+		PageableResponse pageData = new PageableResponse();
+		pageData.setContent(responses);
+		pageData.setPageNumber(pageInfo.getNumber());
+		pageData.setPageSize(pageInfo.getSize());
+		pageData.setTotalElements(pageInfo.getTotalElements());
+		pageData.setTotalPages(pageInfo.getTotalPages());
+		pageData.setNumberOfElements(pageInfo.getNumberOfElements());
+
+		pageData.setEmpty(pageInfo.isEmpty());
+		pageData.setFirst(pageInfo.isFirst());
+		pageData.setLast(pageInfo.isLast());
+		
+		return pageData;
+	}
+
+
+
+	@Override
+	public NotificationResponse updateNotification(Long notificationId, NotificationRequest notificationRequest) {
+		
+		Notification notification = notificationRepository.findById(notificationId).orElseThrow(()-> new ResourceNotFoundException("Notification", notificationId+""));
+		
+		notification.setMessage(notificationRequest.getMessage());
+		notification.setNotificationType(notificationRequest.getNotificationType());
+		
+		Notification save = notificationRepository.save(notification);
+		
+		NotificationResponse response = modelMapper.map(save, NotificationResponse.class);
+		response.setProductName(save.getLicense().getProduct().getProductName());	
+		response.setProductVersion(save.getLicense().getProduct().getVersion());
+		response.setUsername(save.getUser().getFullName());
+		
+		return response;
+	}
+
+
+
+	
+	//delete notification
+	@Override
+	public void deleteNotification(long notificationId) {
+		Notification notification = notificationRepository.findById(notificationId).orElseThrow(()-> new ResourceNotFoundException("Notification", notificationId+""));
+		notificationRepository.delete(notification);
+	}
+
+
 	
 	
 }

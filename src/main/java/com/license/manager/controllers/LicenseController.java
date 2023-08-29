@@ -152,31 +152,42 @@ public class LicenseController {
     
     @Autowired
     LicenseRepository licenseRepository;
-    
+
+    /**
+     * Search for licenses based on various criteria.
+     *
+     * @param productName   The name of the product (optional).
+     * @param productVersion The version of the product (optional).
+     * @param state          The state of the license (optional, defaults to 'Activate').
+     * @param price          The maximum price of the license (optional, defaults to 100000000.0).
+     * @param expireDate     The expiration date of the license (optional).
+     * @return ResponseEntity containing a list of matching licenses.
+     */
     @GetMapping("/license/search")
     public ResponseEntity<?> searchLicense(
-    		 @RequestParam(value = "name", defaultValue = "", required = false) String productName,
-    		 @RequestParam(value = "version", defaultValue = "", required = false) String productVersion,
-    		 @RequestParam(value = "state", defaultValue = "Activate", required = false) String state,
-    		 @RequestParam(value = "price", defaultValue = "100000000.0", required = false) double price,
-    		 @RequestParam(value = "expireDate", defaultValue = "", required = false) String expireDate
-    		){
-    	List<License> licenseList = null;
-    	
-    	try {
-    		if (!expireDate.isEmpty()) {
+            @RequestParam(value = "name", defaultValue = "", required = false) String productName,
+            @RequestParam(value = "version", defaultValue = "", required = false) String productVersion,
+            @RequestParam(value = "state", defaultValue = "Activate", required = false) String state,
+            @RequestParam(value = "price", defaultValue = "100000000.0", required = false) double price,
+            @RequestParam(value = "expireDate", defaultValue = "", required = false) String expireDate
+    ) {
+        List<License> licenseList = null;
+
+        try {
+            if (!expireDate.isEmpty()) {
                 // Convert the provided date string to a Timestamp
                 Timestamp expirationTimestamp = Timestamp.valueOf(expireDate + " 23:59:59");
-                
+
                 // Use expirationTimestamp in your query
                 licenseList = licenseRepository.findByProduct_ProductNameContainingAndProductVersionContainingAndStateContainingAndPriceLessThanEqualAndExpiringDateBefore(productName, productVersion, state, price, expirationTimestamp);
             } else {
-            	licenseList = licenseRepository.findByProduct_ProductNameContainingAndProductVersionContainingAndStateContainingAndPriceLessThanEqual(productName, productVersion, state, price);        
+                licenseList = licenseRepository.findByProduct_ProductNameContainingAndProductVersionContainingAndStateContainingAndPriceLessThanEqual(productName, productVersion, state, price);
             }
-    	}catch (Exception e) {
-    		throw new InvalidDateFormatException();
-		}
-    	
+        } catch (Exception e) {
+            log.error("An error occurred while searching for licenses.", e);
+            throw new InvalidDateFormatException();
+        }
+
         return ResponseEntity.ok(licenseList);
     }
     
