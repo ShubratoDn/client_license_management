@@ -8,8 +8,8 @@
 		<version>3.0.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.license.management</groupId>
-	<artifactId>license_management</artifactId>
+	<groupId>com.license.manager</groupId>
+	<artifactId>license-manager</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>license_management</name>
 	<description>A project on Software License Management</description>
